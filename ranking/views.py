@@ -1,3 +1,5 @@
+import random
+
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -7,12 +9,22 @@ import json
 
 # Global Variables
 song_list = equalsong.testlist
+full_list = equalsong.equal_song
+rank_list = []
+result = []
 
 
 def index(request):
-    request.session["songs"] = song_list
+    song = random.sample(range(len(full_list)), 10)
+    rank_list = []
+    for s in song:
+        rank_list.append(full_list[s])
+    request.session["songs"] = song
     sorted_songs = request.session.get("sorted_songs", [])
-    return render(request, "index.html", {"songs": song_list, "sorted_songs": sorted_songs})
+    if sorted_songs:
+        for rk in sorted_songs:
+            result.append(full_list[rk].getName())
+    return render(request, "index.html", {"songs": rank_list, "sorted_songs": result})
 
 
 def start_ranking(request):
@@ -44,8 +56,8 @@ def ranking_page(request):
 
     # need fix, pass the ranker to choose song
     return render(request, "rank.html", {
-        "song1": song_list[ranker.tmp_left[0]].getName(),
-        "song2": song_list[ranker.tmp_right[0]].getName()
+        "song1": full_list[ranker.tmp_left[0]].getName(),
+        "song2": full_list[ranker.tmp_right[0]].getName()
     })
 
 
@@ -75,8 +87,8 @@ def choose_song(request):
 
         return JsonResponse({
             "finished": False,
-            "song1": song_list[ranker.tmp_left[0]].getName(),
-            "song2": song_list[ranker.tmp_right[0]].getName()
+            "song1": full_list[ranker.tmp_left[0]].getName(),
+            "song2": full_list[ranker.tmp_right[0]].getName()
         })
 
     return JsonResponse({"finished": False})
