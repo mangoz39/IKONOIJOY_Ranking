@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>歌曲排名</title>
+    <script>
+        function chooseSong(choice) {
+            fetch("/choose_song/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie("csrftoken")
+                },
+                body: JSON.stringify({ choice: choice })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.finished) {
+                    window.location.href = "/home";
+                } else {
+                    document.getElementById("btn1").textContent = data.song1;
+                    document.getElementById("btn2").textContent = data.song2;
+                }
+            });
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                const cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.startsWith(name + "=")) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</head>
+<body>
+    <h2>請選擇你更喜歡的歌曲</h2>
+    <button id='btn1' onclick="chooseSong(true)">{{ song1 }}</button>
+    <button id='btn2' onclick="chooseSong(false)">{{ song2 }}</button>
+</body>
+</html>
