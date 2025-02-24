@@ -1,8 +1,11 @@
 class Song:
-    def __init__(self, name):
+    def __init__(self, name, ytid):
         self.name = name
-        self.samune = ""
+        self.ID = ytid
 
     def getName(self):
         return self.name
+
+    def getID(self):
+        return self.ID
 

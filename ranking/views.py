@@ -24,7 +24,7 @@ def index(request):
     if sorted_songs:
         for rk in sorted_songs:
             result.append(full_list[rk].getName())
-    return render(request, "index.html", {"songs": rank_list, "sorted_songs": result})
+    return render(request, "index.html")
 
 
 def start_ranking(request):

@@ -74,6 +74,10 @@
             z-index: 99;
         }
 
+        .menu-content.active {
+            top: 0;
+        }
+
         .menu-content ul {
             list-style: none;
         }
@@ -116,6 +120,16 @@
             background-color: #f5f5f5;
         }
 
+        .menu-content li.active {
+            background-color: #e0e0e0;
+        }
+
+        .header {
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
         /* 中間的色卡 */
         .card-container {
             width: 100%;
@@ -135,11 +149,11 @@
             width: 100%;
             flex: 1 1 0;
             margin-bottom: 0;
-            height: auto;
+            height: auto; /* 移除固定高度，改用 flex 自動分配 */
             min-height: 0;
             overflow: hidden;
             position: relative;
-            text-decoration: none;
+            text-decoration: none
             cursor: pointer
         }
 
@@ -152,10 +166,10 @@
         }
 
         .card-image {
-            max-width: 60%;
-            max-height: 60%;
+            max-width: 60%;  /* 控制圖片最大寬度 */
+            max-height: 60%;  /* 控制圖片最大高度 */
             height: auto;
-            object-fit: contain;
+            object-fit: contain;  /* 保持圖片比例 */
             align-items: center;
             display: block;
         }
@@ -402,15 +416,15 @@
         /* 桌面版樣式 */
         @media (min-width: 768px) {
             .card-container {
-                flex-direction: row;
+                flex-direction: row; /* 明確指定為水平排列 */
                 gap: 20px;
-                min-height: auto;
+                min-height: auto; /* 移除最小高度限制 */
             }
 
             .card-image {
-            max-width: 80%;
-            max-height: 80%;
-            object-fit: contain;
+            max-width: 80%;  /* 控制圖片最大寬度 */
+            max-height: 80%;  /* 控制圖片最大高度 */
+            object-fit: contain;  /* 保持圖片比例 */
             }
 
             .card {
@@ -429,7 +443,7 @@
             }
 
             .modal-footer {
-                margin-top: 20px;
+                margin-top: 20px; /* 調整與上方內容的間距 */
             }
         }
     </style>
