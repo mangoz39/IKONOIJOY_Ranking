@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="referrer" content="strict-origin-when-cross-origin" />
         <title>イコノイジョイソング選手権</title>
         <style>
         /* 基礎樣式 */
@@ -111,6 +112,7 @@
                 transition: all 0.2s ease;
             }
 
+            /*
             .top-info {
                 background-color: #FFABBD;
             }
@@ -118,6 +120,7 @@
             .bottom-info {
                 background-color: #F5E9A8;
             }
+            */
 
             @media (max-width: 767px) {
                 .player-container.first {
@@ -161,6 +164,7 @@
                 }
             }
         </style>
+        <script src="https://www.youtube.com/iframe_api"></script>
     </head>
     <body>
         <div class="top-bar">
@@ -191,23 +195,24 @@
         </div>
 
         <script>
-            // YouTube IFrame API
-            let tag = document.createElement('script');
-            tag.src = "https://www.youtube.com/iframe_api";
-            let firstScriptTag = document.getElementsByTagName('script')[0];
-            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
+            /// 初始化YouTube播放器
             let player1, player2;
+            let initialDataLoaded = false;
+
+            // 修改YouTube初始化函數
             function onYouTubeIframeAPIReady() {
                 // 初始化第一個播放器
                 player1 = new YT.Player('player1', {
                     height: '100%',
                     width: '100%',
-                    videoId: '17NBPoc78oM', // 影片 ID
+                    videoId: '{{ song1_youtube_id }}',
                     playerVars: {
-                        'playsinline': 1,
+                        'autoplay': 0,
                         'controls': 1,
-                        'rel': 0
+                        'rel': 0,
+                        'mute': 0,
+                        'playsinline': 1,
+                        'origin': window.location.origin
                     }
                 });
 
@@ -215,27 +220,140 @@
                 player2 = new YT.Player('player2', {
                     height: '100%',
                     width: '100%',
-                    videoId: 'OGb7M9nvBHE', // 影片 ID
+                    videoId: '{{ song2_youtube_id }}',
                     playerVars: {
-                        'playsinline': 1,
+                        'autoplay': 0,
                         'controls': 1,
-                        'rel': 0
+                        'rel': 0,
+                        'mute': 0,
+                        'playsinline': 1,
+                        'origin': window.location.origin
                     }
+                });
+
+                // 設置初始按鈕文字
+                document.getElementById('song1-button').textContent = '{{ song1|default:"Loading..." }}';
+                document.getElementById('song2-button').textContent = '{{ song2|default:"Loading..." }}';
+
+                // 設置初始顏色
+                const song1Color = '{{ song1_color|default:"0" }}';
+                const song2Color = '{{ song2_color|default:"0" }}';
+                document.querySelector('.top-info').style.backgroundColor = getColorFromCode(song1Color);
+                document.querySelector('.bottom-info').style.backgroundColor = getColorFromCode(song2Color);
+            }
+
+            // 獲取顏色的函數 - 保持不變
+            function getColorFromCode(code) {
+                switch(parseInt(code)) {
+                    case 0:
+                        return "#FFABBD"; // 粉紅色
+                    case 1:
+                        return "#BEE7E5"; // 藍色
+                    case 2:
+                        return "#F5E9A8"; // 黃色
+                    default:
+                        return "#FFABBD"; // 默認為粉紅色
+                }
+            }
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== "") {
+                    const cookies = document.cookie.split(";");
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.startsWith(name + "=")) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            // 修改選擇歌曲的函數
+            function chooseSong(choice) {
+                fetch("/choose_song/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCookie("csrftoken")
+                    },
+                    body: JSON.stringify({ choice: choice })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('No response');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.finished) {
+                        window.location.href = "/result";
+                    } else {
+                        // 更新兩首歌的名稱和顏色
+                        document.getElementById("song1-button").textContent = data.song1;
+                        document.getElementById("song2-button").textContent = data.song2;
+
+                        // 安全地調用播放器函數
+                        if (player1 && typeof player1.cueVideoById === 'function') {
+                            player1.cueVideoById(data.song1_youtube_id);
+                        }
+
+                        if (player2 && typeof player2.cueVideoById === 'function') {
+                            player2.cueVideoById(data.song2_youtube_id);
+                        }
+
+                        // 更新顏色
+                        document.querySelector('.top-info').style.backgroundColor = getColorFromCode(data.song1_color);
+                        document.querySelector('.bottom-info').style.backgroundColor = getColorFromCode(data.song2_color);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("發生錯誤，請重試");
                 });
             }
 
-            // 設置彩色條的點擊事件
-            document.getElementById('song1-button').addEventListener('click', () => {
-                // 點擊第一首歌曲時的處理
-                alert('你選擇了第一首歌曲！');
-                // 這裡可以添加選擇後的處理邏輯
+            // 確保DOM完全加載後才設置事件監聽器
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('song1-button').addEventListener('click', function() {
+                    chooseSong(true);
+                });
+
+                document.getElementById('song2-button').addEventListener('click', function() {
+                    chooseSong(false);
+                });
+
+                // 如果需要在頁面加載時立即獲取初始數據（而不是依賴Django模板變量）
+                // fetchInitialData();
             });
 
-            document.getElementById('song2-button').addEventListener('click', () => {
-                // 點擊第二首歌曲時的處理
-                alert('你選擇了第二首歌曲！');
-                // 這裡可以添加選擇後的處理邏輯
-            });
+            // 可選：獲取初始數據的函數
+            /*
+            function fetchInitialData() {
+                fetch("/get_initial_songs/")
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("song1-button").textContent = data.song1;
+                    document.getElementById("song2-button").textContent = data.song2;
+
+                    if (player1 && typeof player1.loadVideoById === 'function') {
+                        player1.loadVideoById(data.song1_youtube_id);
+                    }
+
+                    if (player2 && typeof player2.loadVideoById === 'function') {
+                        player2.loadVideoById(data.song2_youtube_id);
+                    }
+
+                    document.querySelector('.top-info').style.backgroundColor = getColorFromCode(data.song1_color);
+                    document.querySelector('.bottom-info').style.backgroundColor = getColorFromCode(data.song2_color);
+                })
+                .catch(error => {
+                    console.error("Error fetching initial data:", error);
+                });
+            }
+            */
         </script>
     </body>
 </html>

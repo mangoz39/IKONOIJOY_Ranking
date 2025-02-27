@@ -17,12 +17,19 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.contrib import admin
-from ranking.views import index, start_ranking, ranking_page, choose_song
+from django.conf import settings
+from django.conf.urls.static import static
+from ranking.views import index, start_ranking, ranking_page, choose_song, result
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('home/', index),
-    path('start_ranking/', start_ranking),
-    path('ranking_page/', ranking_page),
-    path('choose_song/', choose_song)
+    path('start_ranking/', start_ranking, name='start_ranking'),
+    path('ranking_page/', ranking_page, name='ranking_page'),
+    path('choose_song/', choose_song),
+    path('result/', result, name='result')
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
