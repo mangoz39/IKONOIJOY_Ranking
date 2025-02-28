@@ -88,6 +88,9 @@ class SongRanker:
             self.merged_list = []
             self.make_new_pair()
 
+        if len(self.merged_list) == len(self.songs):
+            return True
+
         return False
 
     def merge(self, preferred):

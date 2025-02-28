@@ -23,18 +23,21 @@ def index(request):
 
 def start_ranking(request):
     request.session.flush()
-    global song_list, song_count, rand_list, rank_list, result, oshi_list
+    global song_list, song_count, rand_list, rank_list, result_list, oshi_list
     song_list = []
     song_count = 0
     rand_list = []
     rank_list = []
-    result = []
+    result_list = []
     oshi_list = []
     if request.method == 'POST':
         list_ref = request.POST.get('list_ref', '')
         oshi1 = request.POST.get('oshi1', '')
         oshi2 = request.POST.get('oshi2', '')
         oshi3 = request.POST.get('oshi3', '')
+        oshi_list.append(oshi1)
+        oshi_list.append(oshi2)
+        oshi_list.append(oshi3)
         print("所有 POST 參數:", request.POST)
 
         match list_ref:
@@ -67,7 +70,6 @@ def start_ranking(request):
 
         random.shuffle(rand_list)
         request.session["songs"] = rand_list
-        oshi_list.append([oshi1, oshi2, oshi3])
 
         ranker = ranking.SongRanker(rand_list)  # 建立 ranking 物件
         request.session["ranker"] = ranker.to_dict()  # 存入 session
@@ -135,7 +137,11 @@ def choose_song(request):
         if is_finished:
             tmp_res = ranker.temp_list[0]
             tmp_ses = []
-            for s in tmp_res[:10]:
+            if song_count > 55:
+                k = 10
+            else:
+                k = 12
+            for s in tmp_res[:k]:
                 result_list.append(song_list[s])
 
             for sg in result_list:
@@ -153,12 +159,12 @@ def choose_song(request):
             "song2_color": song_list[ranker.tmp_right[0]].getGroup()
         })
 
-    return JsonResponse({"finished": False})
+    return JsonResponse({"finished": True})
 
 
 def result(request):
     plot_pend = request.session.get('sorted_songs')
-    img = plot.plot_rank(plot_pend)
+    img = plot.plot_rank(plot_pend, song_count, oshi_list)
     return render(request, "result.html", {
         'base64_image': img,
         'image_type': 'image/png'})

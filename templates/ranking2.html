@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="referrer" content="strict-origin-when-cross-origin" />
-        <title>イコノイジョイソング選手権</title>
+        <title>#私のイコノイジョイベスト選手</title>
         <style>
         /* 基礎樣式 */
             body {
@@ -47,6 +47,7 @@
                 position: relative;
                 cursor: pointer;
                 z-index: 101;
+                user-select: none;
             }
 
             .menu-button img {
@@ -110,6 +111,7 @@
                 box-sizing: border-box;
                 cursor: pointer;
                 transition: all 0.2s ease;
+                user-select: none;
             }
 
             /*
@@ -171,7 +173,7 @@
             <div class="menu-button">
                 <img src="../ranking/files/src/ikonoijoy_logo.png" alt="menu">
             </div>
-            <h1 class="top-header">イコノイジョイソング選手権</h1>
+            <h1 class="top-header">#私のイコノイジョイベスト選手権</h1>
         </div>
 
         <div class="content-container">
@@ -198,8 +200,8 @@
             /// 初始化YouTube播放器
             let player1, player2;
             let initialDataLoaded = false;
+            let isDirecting = false;
 
-            // 修改YouTube初始化函數
             function onYouTubeIframeAPIReady() {
                 // 初始化第一個播放器
                 player1 = new YT.Player('player1', {
@@ -273,6 +275,9 @@
 
             // 修改選擇歌曲的函數
             function chooseSong(choice) {
+                if(isDirecting) {
+                    return
+                }
                 fetch("/choose_song/", {
                     method: "POST",
                     headers: {
@@ -289,7 +294,8 @@
                 })
                 .then(data => {
                     if (data.finished) {
-                        window.location.href = "/result";
+                        isDirecting = true;
+                        window.location.href = "/result/";
                     } else {
                         // 更新兩首歌的名稱和顏色
                         document.getElementById("song1-button").textContent = data.song1;
