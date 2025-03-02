@@ -12,7 +12,6 @@ class SongRanker:
             self.prepare_next_comparison()
 
     def prepare_next_comparison(self):
-        print('start make new pairs')
         self.current_pairs = []
         if len(self.temp_list) == 3:
             tmp = self.temp_list.pop(0)
@@ -35,11 +34,10 @@ class SongRanker:
         return
 
     def get_current_pair(self):
-        # pass parameters to views.py
         if self.tmp_left and self.tmp_right:
             return self.tmp_left[0], self.tmp_right[0]
         else:
-            return None, None
+            return 0, 0
 
     def make_new_pair(self):
         new_pair = self.current_pairs.pop(0)
@@ -52,30 +50,20 @@ class SongRanker:
 
     def choose(self, choice):
 
-        print("Before merge:")
-        print(f"current_pairs: {self.current_pairs}")
-        print(f"tmp_left: {self.tmp_left}")
-        print(f"tmp_right: {self.tmp_right}")
-
         self.merge(choice)
 
+        # 左右表都空，進行下一階段
         if not self.tmp_left and not self.tmp_right:
             self.temp_list.append(self.merged_list)
-            print(f'push {self.merged_list} to tmp')
             if not self.current_pairs:
                 if len(self.merged_list) == len(self.songs):
                     return True
                 else:
-                    print('empty c pair')
                     self.prepare_next_comparison()
             self.merged_list = []
             self.make_new_pair()
 
-        print("\nAfter merge:")
-        print(f"current_pairs: {self.current_pairs}")
-        print(f"tmp_left: {self.tmp_left}")
-        print(f"tmp_right: {self.tmp_right}")
-
+        # 只有左空或只有右空
         if not self.tmp_left or not self.tmp_right:
             if not self.tmp_left:
                 self.merged_list.extend(self.tmp_right)

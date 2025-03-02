@@ -249,3 +249,17 @@ ikonoi_total = 122
 ikonoijoy_total = 138
 ikojoy_total = 87
 noijoy_total = 64
+
+"""
+song_list definition:
+0: equal_love
+1: not_equal_me
+2: nearly_equal_joy
+3: ikonoijoy
+4: ikonoi
+5: ikojoy
+6: noijoy
+"""
+
+slist = [equallove_song, notequalme_song, nearlyequaljoy_song, ikonoijoy_song, ikonoi_song,
+         ikojoy_song, noijoy_song]

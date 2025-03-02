@@ -23,6 +23,7 @@ from ranking.views import index, start_ranking, ranking_page, choose_song, resul
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', index),
     path('home/', index),
     path('start_ranking/', start_ranking, name='start_ranking'),
     path('ranking_page/', ranking_page, name='ranking_page'),

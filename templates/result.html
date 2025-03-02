@@ -16,27 +16,28 @@
             }
 
             .top-bar {
+                background: white;
                 height: 60px;
                 width: 100%;
-                background: white;
-                display: flex;
-                align-items: center;
-                padding: 0 20px;
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-                z-index: 10;
                 position: fixed;
                 top: 0;
                 left: 0;
-                box-sizing: border-box;
+                z-index: 100;
+                padding: 0 20px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                display: grid;
+                grid-template-columns: 30px 1fr 30px;
+                align-items: center;
             }
 
             .top-header {
-                position: absolute;
-                left: 50%;
-                transform: translateX(-50%);
-                font-size: 20px;
                 font-weight: bold;
-                margin: 0;
+                text-align: center;
+                grid-column: 2;
+                font-size: clamp(14px, 4vw, 24px);
+                white-space: nowrap;
+                overflow: hidden;
+                padding: 0 5px;
             }
 
             .menu-button {
@@ -86,7 +87,7 @@
         <div class="content-container">
             <div class="image-container">
                 <!-- 使用 Base64 編碼的圖片 -->
-                <img src="data:{{ image_type }};base64,{{ base64_image }}" alt="Equal Love">
+                <img src="data:{{ image_type }};base64,{{ base64_image }}" alt="ranking result">
             </div>
         </div>
     </body>
