@@ -1,5 +1,6 @@
 import base64
 import os
+
 from django.conf import settings
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
@@ -9,7 +10,7 @@ def group_info_process(song_count, oshi):
     match song_count:
         case 15:
             return 2, "nearly_equal_joy_back.png", oshi[2]
-        case 49:
+        case 51:
             if oshi[1] == "川中子奈月心" or "菅波美玲":
                 return 1, "not_equal_me_back_1.png", oshi[1]
             elif oshi[1] == "蟹沢萌子" or "冨田菜々風":

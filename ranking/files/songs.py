@@ -71,12 +71,14 @@ thirdbut = song.Song('君の第3ボタン', "xmo-UbsUZE4", 0)
 zettaiidolyamenaide = song.Song('絶対アイドル辞めないで', "17NBPoc78oM", 0)
 sunaori = song.Song('仲直りシュークリーム', "D0SfIi-0Zpo", 0)
 umilemontea = song.Song('海とレモンティー', "i024yWd9oiI", 0)
-tokubechu = song.Song('とくべチュ、して', "p-jc9qMpBb4", 0)
-koibitoijou = song.Song('恋人以上、好き未満', "F3P8vcZkIh4", 0)
-choutokkyu = song.Song('超特急逃走中', "MTtV0XXEjd0", 0)
+tokubechu = song.Song('とくべチュ、して', "F3P8vcZkIh4", 0)
+koibitoijou = song.Song('恋人以上、好き未満', "p-jc9qMpBb4", 0)
+choutokkyu = song.Song('超特急逃走中', "d20dEAtbL08", 0)
 takaramonogreen = song.Song('宝物はグリーン', "mxKcIpKgwP0", 0)
 
 # ≠ME
+mobunoterera = song.Song('モブノデレラ', 'PlYXXoMPWjs', 1)
+kamisama = song.Song('神様の言うとーり！', 'WlhY2wpknuc', 1)
 lovesong = song.Song('最強のラブソング', "orPfAgzMlPI", 1)
 natsugakida = song.Song('夏が来たから', "OGb7M9nvBHE", 1)
 gomennemajide = song.Song('ごめん、マジで', 'L0nXSQiFMzA', 1)
@@ -148,7 +150,7 @@ nearlyequaljoy = song.Song('≒JOY', '2nOHrLolG08', 2)
 tsugiai = song.Song("次に会えた時 何を話そうかな", 'aC4CdVDFzB4', 0)
 
 # IKONOIJOY
-tripledate = song.Song("トリプルデート", 'v3wVAbAWrE0', 0)
+tripledate = song.Song("トリプルデート", 'gkabNNfTjX4', 0)
 
 equallove_song = [equallove, kiokuwadokokade, start, bokukuri, todoiteloveyou, ikorabunuma, teokure, bukatsuchu,
                   kiaradasukete, wantyou, funenore, aikatsu, dialily, iranai, nijino, zuruiyo, sweetestgirl,
@@ -161,9 +163,9 @@ equallove_song = [equallove, kiokuwadokokade, start, bokukuri, todoiteloveyou, i
                   koibitoijou, takaramonogreen, oshinoirusekai, choutokkyu]
 
 notequalme_song = [
-    lovesong, natsugakida, gomennemajide, harunokoibito, marcato, datemae, symphony,
-    lastdancelastchance, herointoookami, hatsukoicomeback, anticonfiture, dateato,
-    floorkiller, gekkabijin, omowaseburiko, marshmallow, twoamrocknroll,
+    mobunoterera, kamisama, lovesong, natsugakida, gomennemajide, harunokoibito, marcato,
+    datemae, symphony, lastdancelastchance, herointoookami, hatsukoicomeback, anticonfiture,
+    dateato, floorkiller, gekkabijin, omowaseburiko, marshmallow, twoamrocknroll,
     konomamamomentary, pionisu, tennshiwadokoe, ultrararekiss, momoriotabling,
     hanikamishort, summerchocolate, bokutachiimage, happytankentai, sukijyanai,
     nijigakakaru, offshortknit, kimiwasparkle, chocolatemeran, watashiaccent,
@@ -243,7 +245,7 @@ noijoy_song = [
     sweetsixteen, lonelylion, warattefuragiru, nearlyequaljoy]
 
 equal_total = 72
-not_equal_me_total = 49
+not_equal_me_total = 51
 nearly_equal_joy_total = 15
 ikonoi_total = 122
 ikonoijoy_total = 138

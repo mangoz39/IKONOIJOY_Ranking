@@ -4,6 +4,8 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>#私のイコノイジョイベスト選手権</title>
+        {% load static %}
+        <link REL="SHORTCUT ICON" HREF="{% static "images/favicon.png" %}">
         <style>
             * {
                 margin: 0;
@@ -75,6 +77,7 @@
                 padding: 80px 20px 20px;
                 transition: all 0.3s;
                 z-index: 99;
+                user-select: none;
             }
 
             .menu-content.active {
@@ -111,12 +114,20 @@
                 background-color: rgba(255, 171, 189, 0.3);
             }
 
+            .menu-content li[data-section="record"]:hover {
+                background-color: rgba(238, 211, 214, 0.5);
+            }
+
+            .menu-content li[data-section="make"]:hover {
+                background-color: rgba(190, 231, 229, 0.5);
+            }
+
             .menu-content li[data-section="link"]:hover {
-                background-color: rgba(190, 231, 229, 0.3);
+                background-color: rgba(218, 232, 199, 0.5);
             }
 
             .menu-content li[data-section="language"]:hover {
-                background-color: rgba(245, 233, 168, 0.3);
+                background-color: rgba(245, 233, 168, 0.7);
             }
 
             .menu-content li:hover {
@@ -483,6 +494,8 @@
         <div class="menu-content">
             <ul>
                 <li data-section="start" data-zh="開始！" data-ja="スタート！">開始！</li>
+                <li data-section="record" data-zh="上次紀錄" data-ja="アーカイブ">上次紀錄</li>
+                <li data-section="make" data-zh="製作書籤" data-ja="しおりを作る">製作書籤</li>
                 <li data-section="link" data-zh="相關連結" data-ja="サイトリンク">相關連結</li>
                 <li data-section="language" id="languageToggle">日本語</li>
             </ul>
@@ -495,7 +508,7 @@
                         <img src="{% static 'images/love_logo_word2.png' %}" alt="Love" class="card-image">
                     </div>
                 </a>
-                <a href="https://youtu.be/OGb7M9nvBHE" target="_blank" class="card me-card">
+                <a href="https://youtu.be/PlYXXoMPWjs" target="_blank" class="card me-card">
                     <div class="content-area">
                         <img src="{% static 'images/me_logo_word.png' %}" alt="Me" class="card-image">
                     </div>
@@ -584,7 +597,86 @@
                             </div>
                         </div>
                         <input type="hidden" name="list_ref" id="list_ref">
-                        <button type="submit" class="start-button">開始</button>
+                        <button type="submit" class="start-button" data-ja="スタート" data-zh="開始">開始</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="makeModal" class="modal">
+            <div class="modal-content">
+                <div class="close">
+                    <img src="{% static 'images/ikonoijoy_logo.png' %}" alt="close">
+                </div>
+                <div class="modal-text" data-ja="背景" data-zh="背景">背景</div>
+                <form id="makeForm" method="POST" action="{% url 'make_bookmark' %}">
+                    {% csrf_token %}
+                    <div class="song-settings">
+                        <div class="select-background">
+                            <div class="select-group background-select">
+                                <label data-ja="背景選択" data-zh="背景選擇">背景選擇</label>
+                                <select name="background">
+                                    <option value="1">イコラブ</option>
+                                    <option value="10">ノイミー</option>
+                                    <option value="100">ニアジョイ</option>
+                                    <option value="111">イコノイジョイ</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="recommendation-settings">
+                            <h3>一推し設定</h3>
+                            <div class="select-group love-select">
+                                <label>=LOVE</label>
+                                <select name="oshi1">
+                                    <option value="大谷映美里">大谷映美里</option>
+                                    <option value="大場花菜">大場花菜</option>
+                                    <option value="音嶋莉沙">音嶋莉沙</option>
+                                    <option value="齋藤樹愛羅">齋藤樹愛羅</option>
+                                    <option value="佐々木舞香">佐々木舞香</option>
+                                    <option value="髙松瞳">髙松瞳</option>
+                                    <option value="瀧脇笙古">瀧脇笙古</option>
+                                    <option value="野口衣織">野口衣織</option>
+                                    <option value="諸橋沙夏">諸橋沙夏</option>
+                                    <option value="山本杏奈">山本杏奈</option>
+                                </select>
+                            </div>
+                            <div class="select-group me-select">
+                                <label>≠ME</label>
+                                <select name="oshi2">
+                                    <option value="尾木波菜">尾木波菜</option>
+                                    <option value="落合希来里">落合希来里</option>
+                                    <option value="蟹沢萌子">蟹沢萌子</option>
+                                    <option value="河口夏音">河口夏音</option>
+                                    <option value="川中子奈月心">川中子奈月心</option>
+                                    <option value="櫻井もも">櫻井もも</option>
+                                    <option value="菅波美玲">菅波美玲</option>
+                                    <option value="鈴木瞳美">鈴木瞳美</option>
+                                    <option value="谷崎早耶">谷崎早耶</option>
+                                    <option value="冨田菜々風">冨田菜々風</option>
+                                    <option value="永田詩央里">永田詩央里</option>
+                                    <option value="本田珠由記">本田珠由記</option>
+                                </select>
+                            </div>
+                            <div class="select-group joy-select">
+                                <label>≒JOY</label>
+                                <select name="oshi3">
+                                    <option value="逢田珠里依">逢田珠里依</option>
+                                    <option value="天野香乃愛">天野香乃愛</option>
+                                    <option value="市原愛弓">市原愛弓</option>
+                                    <option value="江角怜音">江角怜音</option>
+                                    <option value="大信田美月">大信田美月</option>
+                                    <option value="大西葵">大西葵</option>
+                                    <option value="小澤愛実">小澤愛実</option>
+                                    <option value="髙橋舞">髙橋舞</option>
+                                    <option value="藤沢莉子">藤沢莉子</option>
+                                    <option value="村山結香">村山結香</option>
+                                    <option value="山田杏佳">山田杏佳</option>
+                                    <option value="山野愛月">山野愛月</option>
+                                </select>
+                            </div>
+                        </div>
+                        <input type="hidden" name="list_ref" id="make_list_ref">
+                        <button type="submit" class="start-button" data-ja="次に" data-zh="下一步">下一步</button>
                     </div>
                 </form>
             </div>
@@ -616,6 +708,7 @@
             const menuItems = document.querySelectorAll('.menu-content li');
             const linkModal = document.getElementById('linkModal');
             const startModal = document.getElementById('startModal');
+            const makeModal = document.getElementById('makeModal');
             const modals = document.querySelectorAll('.modal');
             const closeBtn = document.querySelector('.close');
             const closeBtns = document.querySelectorAll('.close');
@@ -652,6 +745,18 @@
                     }
                     else if (section === 'start') {
                         startModal.classList.add('show');
+                        isMenuOpen = false;
+                        menuButton.classList.remove('active');
+                        menuContent.classList.remove('active');
+                    }
+                    else if (section === 'record') {
+                        isMenuOpen = false;
+                        menuButton.classList.remove('active');
+                        menuContent.classList.remove('active');
+                        window.location.href = "/record"
+                    }
+                    else if (section === 'make') {
+                        makeModal.classList.add('show');
                         isMenuOpen = false;
                         menuButton.classList.remove('active');
                         menuContent.classList.remove('active');
@@ -696,7 +801,7 @@
             // 添加表單提交的處理
             const songForm = document.getElementById('songForm');
 
-            songForm.addEventListener('submit', function(e) {
+            songForm.addEventListener('submit', async function(e) {
                 // 阻止默認提交行為
                 e.preventDefault();
 
@@ -715,7 +820,7 @@
 
                     setTimeout(() => {
                         checkboxGroup.classList.remove('shake');
-                    }, 400); // 600ms與動畫持續時間一致
+                    }, 400);
 
                     e.stopPropagation();
                     return;
@@ -736,7 +841,47 @@
                         'X-CSRFToken': csrftoken,
                         'X-Requested-With': 'XMLHttpRequest'
                     },
-                    // 重要: 包含憑證以發送 cookies (包括 CSRF cookie)
+                    credentials: 'same-origin'
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            if (response.redirected) {
+                                window.location.href = response.url;
+                                return;
+                            } else {
+                                // 處理非重定向回應
+                                return response.text().then(text => {
+                                    console.log('回應內容:', text);
+                                });
+                            }
+                        }
+                        else {
+                            console.error('請求失敗:', response.status, response.statusText);
+                            alert('發生錯誤，請稍後再試3');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('錯誤:', error);
+                        alert('發生錯誤，請稍後再試4');
+                    });
+            })
+
+            const makeForm = document.getElementById('makeForm');
+
+            makeForm.addEventListener('submit', async function(e) {
+                // 獲取 CSRF 令牌
+                const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+                const formData = new FormData(makeForm);
+
+                // 發送 AJAX 請求
+                fetch(makeForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': csrftoken,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
                     credentials: 'same-origin'
                 })
                     .then(response => {
@@ -744,6 +889,7 @@
                             if (response.redirected) {
                                 // 重定向到新的 URL
                                 window.location.href = response.url;
+                                return;
                             } else {
                                 // 處理非重定向回應
                                 return response.text().then(text => {
@@ -754,14 +900,15 @@
                         }
                         else {
                             console.error('請求失敗:', response.status, response.statusText);
-                            alert('發生錯誤，請稍後再試');
+                            alert('發生錯誤，請稍後再試1');
                         }
                     })
                     .catch(error => {
                         console.error('錯誤:', error);
-                        alert('發生錯誤，請稍後再試');
+                        alert('發生錯誤，請稍後再試2');
                     });
             })
+
             document.addEventListener('click', function () {
                     // 取得checkbox相關元素
                     const checkboxGroup = document.querySelector('.checkbox-group');

@@ -19,16 +19,21 @@ from django.urls import path
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from ranking.views import index, start_ranking, ranking_page, choose_song, result
+from ranking.views import (index, start_ranking, rank, choose_song, result,
+                           oshi_statistics_view, record, bookmark, make_bookmark)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index),
-    path('home/', index),
-    path('start_ranking/', start_ranking, name='start_ranking'),
-    path('ranking_page/', ranking_page, name='ranking_page'),
-    path('choose_song/', choose_song),
-    path('result/', result, name='result')
+    path('home', index),
+    path('start_ranking', start_ranking, name='start_ranking'),
+    path('rank', rank, name='rank'),
+    path('bookmark', bookmark, name='bookmark'),
+    path('make_bookmark', make_bookmark, name='make_bookmark'),
+    path('choose_song', choose_song),
+    path('result', result, name='result'),
+    path('record', record, name='record'),
+    path('api/oshi-statistics', oshi_statistics_view, name='oshi_statistics')
 ]
 
 if settings.DEBUG:

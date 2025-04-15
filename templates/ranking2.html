@@ -4,7 +4,9 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="referrer" content="strict-origin-when-cross-origin" />
-        <title>#私のイコノイジョイベスト選手</title>
+        <title>#私のイコノイジョイベスト選手権</title>
+        {% load static %}
+        <link REL="SHORTCUT ICON" HREF="{% static "images/favicon.png" %}">
         <style>
         /* 基礎樣式 */
             body {
@@ -59,6 +61,10 @@
             }
 
             .menu-button:hover img {
+                transform: rotate(180deg);
+            }
+
+            .menu-button.active img {
                 transform: rotate(180deg);
             }
 
@@ -279,7 +285,7 @@
                 if(isDirecting) {
                     return
                 }
-                fetch("/choose_song/", {
+                fetch("/choose_song", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -296,7 +302,7 @@
                 .then(data => {
                     if (data.finished) {
                         isDirecting = true;
-                        window.location.href = "/result/";
+                        window.location.href = "/result";
                     } else {
                         // 更新兩首歌的名稱和顏色
                         document.getElementById("song1-button").textContent = data.song1;

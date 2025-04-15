@@ -98,7 +98,6 @@ class SongRanker:
                 self.merged_list.extend(self.tmp_left)
                 self.tmp_left = []
 
-        print(f'{preferred} win, merged = {self.merged_list}')
         return
 
     def to_dict(self):

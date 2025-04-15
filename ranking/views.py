@@ -5,12 +5,12 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
-from .function import ranking, plot  # 引入排序類
+from .function import ranking, plot, database  # 引入排序類
 from .files import songs as sg
 
 
 def index(request):
-    request.session.flush()
+    request.session['access'] = 0
     return render(request, "index.html")
 
 
@@ -27,6 +27,7 @@ def start_ranking(request):
     """
 
     request.session.flush()
+    request.session['access'] = 1
     rand_list = []
     if request.method == 'POST':
         list_ref = request.POST.get('list_ref', '')
@@ -34,7 +35,6 @@ def start_ranking(request):
         oshi2 = request.POST.get('oshi2', '')
         oshi3 = request.POST.get('oshi3', '')
         request.session['oshi'] = [oshi1, oshi2, oshi3]
-        print("所有 POST 參數:", request.POST)
 
         match list_ref:
             case '1':
@@ -59,7 +59,7 @@ def start_ranking(request):
                 song_list = 3
                 song_count = sg.ikonoijoy_total
             case _:
-                return redirect('home/')
+                return redirect('home')
 
         for i in range(song_count):
             rand_list.append(i)
@@ -73,26 +73,25 @@ def start_ranking(request):
         request.session["ranker"] = ranker.to_dict()  # 存入 session
         request.session["sorted_songs"] = []
 
-        request.session['can_access'] = '1'
-        return redirect("ranking_page")
+        request.session['access'] = '1'
+        return redirect('rank')
 
     return redirect('home')
 
 
-def ranking_page(request):
-    permission = request.session.get("can_access")
-    song_list = sg.slist[request.session.get('song_list')]
-    if permission == '1':
+def rank(request):
+    if request.session.get("access") == '1':
+        song_list = sg.slist[request.session.get('song_list')]
         ranker_data = request.session.get("ranker")
         if ranker_data is None:
-            return JsonResponse({"error": "Access Denied"}, status=400)
+            return JsonResponse({"error": "400 Bad Request (Access Denied)"}, status=400)
 
         # 使用 from_dict 重新建立 SongRanker 物件
         songs = request.session.get("songs", [])
         ranker = ranking.SongRanker.from_dict(ranker_data, songs)
         song_left, song_right = ranker.get_current_pair()
         if song_left == 0 and song_right == 0:
-            return JsonResponse({"error": "Access Denied"}, status=400)
+            return JsonResponse({"error": "400 Bad Request (Access Denied)"}, status=400)
 
         request.session["ranker"] = ranker.to_dict()
 
@@ -106,7 +105,7 @@ def ranking_page(request):
             "song2_color": song_list[song_right].getGroup()
         })
     else:
-        return JsonResponse({"error": "Access Denied"}, status=400)
+        return JsonResponse({"error": "400 Bad Request (Access Denied)"}, status=400)
 
 
 @csrf_exempt
@@ -115,7 +114,7 @@ def choose_song(request):
     if request.method == "POST":
         ranker_data = request.session.get("ranker")
         if ranker_data is None:
-            return JsonResponse({"error": "Access Denied"}, status=400)
+            return JsonResponse({"error": "400 Bad Request (Access Denied)"}, status=400)
 
         # 使用 from_dict 重新建立 SongRanker 物件
         songs = request.session.get("songs", [])
@@ -145,7 +144,7 @@ def choose_song(request):
 
         song_left, song_right = ranker.get_current_pair()
         if song_left == 0 and song_right == 0:
-            return JsonResponse({"error": "Access Denied"}, status=400)
+            return JsonResponse({"error": "400 Bad Request (Access Denied)"}, status=400)
 
         return JsonResponse({
             "finished": False,
@@ -162,10 +161,205 @@ def choose_song(request):
 
 def result(request):
     plot_pend, song_count, oshi_list = (
-        request.session.get('sorted_songs'),
-        request.session.get('song_count'),
-        request.session.get('oshi', ['', '', '']))
+        request.session.get('sorted_songs', []),
+        request.session.get('song_count', 0),
+        request.session.get('oshi', []))
+    if plot_pend is None or song_count is None or oshi_list is None:
+        return JsonResponse({"error": "400 Bad Request (Access Denied)"}, status=400)
     img = plot.plot_rank(plot_pend, song_count, oshi_list)
+    user_id = request.session.session_key
+    ip = request.META.get('REMOTE_ADDR')
+    database.record_user_choice(user_id, ip, oshi_list, plot_pend)
+    request.session['access'] = 0
+    request.session['record'] = 1
     return render(request, "result.html", {
         'base64_image': img,
         'image_type': 'image/png'})
+
+
+def record(request):
+    if request.session.get('record') == 1:
+        plot_pend, song_count, oshi_list = (
+            request.session.get('sorted_songs', []),
+            request.session.get('song_count', 0),
+            request.session.get('oshi', []))
+        if plot_pend is None or song_count is None or oshi_list is None:
+            return render(request, "index.html")
+        img = plot.plot_rank(plot_pend, song_count, oshi_list)
+        return render(request, "result.html", {
+            'base64_image': img,
+            'image_type': 'image/png'})
+    else:
+        return render(request, "index.html")
+
+
+def oshi_statistics_view(request):
+    """
+    顯示統計結果的函數
+    """
+    stats = database.get_oshi_statistics()
+
+    # 處理格式顯示
+    formatted_stats = {
+        'oshi_love': [],
+        'oshi_me': [],
+        'oshi_joy': [],
+        'song_list': []
+    }
+
+    for name, count in stats['oshi_love'].items():
+        # 轉換JSON格式
+        try:
+            if isinstance(name, str) and (name.startswith('{') or name.startswith('[')):
+                parsed_name = json.loads(name)
+                if isinstance(parsed_name, str):
+                    display_name = parsed_name
+                elif isinstance(parsed_name, (list, dict)):
+                    display_name = str(parsed_name)
+                else:
+                    display_name = name
+            else:
+                display_name = name
+        except:
+            display_name = name
+
+        formatted_stats['oshi_love'].append({
+            'name': display_name,
+            'count': count
+        })
+
+    for name, count in stats['oshi_me'].items():
+        # 轉換JSON格式
+        try:
+            if isinstance(name, str) and (name.startswith('{') or name.startswith('[')):
+                parsed_name = json.loads(name)
+                if isinstance(parsed_name, str):
+                    display_name = parsed_name
+                elif isinstance(parsed_name, (list, dict)):
+                    display_name = str(parsed_name)
+                else:
+                    display_name = name
+            else:
+                display_name = name
+        except:
+            display_name = name
+
+        formatted_stats['oshi_me'].append({
+            'name': display_name,
+            'count': count
+        })
+
+    for name, count in stats['oshi_joy'].items():
+        # 轉換JSON格式
+        try:
+            if isinstance(name, str) and (name.startswith('{') or name.startswith('[')):
+                parsed_name = json.loads(name)
+                if isinstance(parsed_name, str):
+                    display_name = parsed_name
+                elif isinstance(parsed_name, (list, dict)):
+                    display_name = str(parsed_name)
+                else:
+                    display_name = name
+            else:
+                display_name = name
+        except:
+            display_name = name
+
+        formatted_stats['oshi_joy'].append({
+            'name': display_name,
+            'count': count
+        })
+
+    # 處理 song_list
+    for name, count in stats['song_list'].items():
+        formatted_stats['song_list'].append({
+            'name': name,
+            'count': count
+        })
+
+    formatted_stats['oshi_love'] = sorted(formatted_stats['oshi_love'], key=lambda x: x['count'], reverse=True)
+    formatted_stats['oshi_me'] = sorted(formatted_stats['oshi_me'], key=lambda x: x['count'], reverse=True)
+    formatted_stats['oshi_joy'] = sorted(formatted_stats['oshi_joy'], key=lambda x: x['count'], reverse=True)
+    formatted_stats['song_list'] = sorted(formatted_stats['song_list'], key=lambda x: x['count'], reverse=True)
+
+    return JsonResponse({
+        'success': True,
+        'statistics': formatted_stats
+    }, json_dumps_params={'ensure_ascii': False})
+
+
+def make_bookmark(request):
+    request.session.flush()
+    if request.method == 'POST':
+        oshi1 = request.POST.get('oshi1', '')
+        oshi2 = request.POST.get('oshi2', '')
+        oshi3 = request.POST.get('oshi3', '')
+        request.session['oshi'] = [oshi1, oshi2, oshi3]
+        background = request.POST.get('background', '0')
+        match background:
+            case '100':
+                request.session['song_count'] = 15
+                ref_list = sg.nearlyequaljoy_song
+                total_sel = 12
+            case '10':
+                request.session['song_count'] = 51
+                ref_list = sg.notequalme_song
+                total_sel = 12
+            case '1':
+                request.session['song_count'] = 72
+                ref_list = sg.equallove_song
+                total_sel = 10
+            case _:
+                request.session['song_count'] = 73
+                ref_list = sg.ikonoijoy_song
+                total_sel = 10
+
+        request.session['total_selections'] = total_sel
+        song_list = []
+        for s in ref_list:
+            song_list.append({"name": s.getName(), "youtube_id": s.getID()})
+        song_json = json.dumps(song_list)
+        # print("傳遞的歌曲JSON:", song_json)
+
+        request.session['oshi'] = [oshi1, oshi2, oshi3]
+        return render(request, "bookmark.html", {
+            "song_json": song_json,
+            "current_selection": 1,
+            "total_selections": total_sel
+        })
+
+
+def bookmark(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            song_name = data.get('song_name')
+            selection_number = int(data.get('selection_number', 0))
+
+            res_list = request.session.get('sorted_songs', [])
+            res_list.append(song_name)
+            if not song_name:
+                return JsonResponse({'status': 'error', 'message': 'Empty Selection'}, status=400)
+            request.session['sorted_songs'] = res_list
+            request.session.modified = True
+
+            # get current status from session
+            total_selections = request.session.get('total_selections', 10)  # default : 10
+
+            # check if selection is complete
+            if selection_number >= total_selections:
+                return JsonResponse({  # redirect if completed
+                    'status': 'complete',
+                    'message': '所有選擇已完成',
+                    'redirect_url': '/result'
+                })
+            else:
+                return JsonResponse({
+                    'status': 'success',
+                    'message': f'{selection_number} / {total_selections} : {song_name}',
+                    'next_selection': selection_number + 1
+                })
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+    return JsonResponse({'status': 'error', 'message': 'HTTP : POST method only (405)'}, status=405)
