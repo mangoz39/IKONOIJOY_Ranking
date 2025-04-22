@@ -1,13 +1,15 @@
 import os
+
+from decouple import config
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-&wkp+#8_j6@rri@b)5l3met4_lt)vnn+))i*j=#2p)w_qzbrtg'
 
-DEBUG = True
+DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['my-ikonoijoy.fun']
 
 
 # Application definition
