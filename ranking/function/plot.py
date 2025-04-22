@@ -38,10 +38,11 @@ def plot_rank(song_list, count, oshi):
     love_footer = 110, 3800
     me_position_x = 776
     me_position_y = 580
-    me_footer = 110, 4284
+    me_footer = 110, 4254
     joy_position_x = 776
     joy_position_y = 580
     joy_footer = 110, 4254
+    max_text_width = 1250
 
     group_info, img_info, oshi_name = group_info_process(count, oshi)
     image_path = os.path.join(settings.STATICFILES_DIRS[0], 'images', img_info)
@@ -60,6 +61,12 @@ def plot_rank(song_list, count, oshi):
             position_x, position_y, position_f, footer = love_position_x, love_position_y, love_footer, f'代表：{oshi_name}'
 
     for i in song_list:
+        for size in [100, 90, 80, 50]:
+            font = ImageFont.truetype('Arial Unicode.ttf', size=size)
+            text_width = font.getbbox(i)[2]
+            if text_width <= max_text_width:
+                break  # 找到適合的字體寬度
+
         text = i
         draw.text(get_text_position(i, position_x, position_y, font), text, font=font, fill=(0, 0, 0))
         position_y += 320

@@ -17,6 +17,7 @@
                 font-family: Arial, sans-serif;
                 min-height: 100vh;
                 position: relative;
+                user-select: none;
             }
 
             /* 頂部的選項欄及標題 */
@@ -504,7 +505,7 @@
         {% load static %}
         <div class="top-bar">
             <div class="menu-button">
-                <img src="{% static 'images/ikonoijoy_logo.png' %}" alt="menu">
+                <img src="{% static 'images/ikonoijoy_logo.png' %}" alt="menu" oncontextmenu="return false">
             </div>
             <h1 class="top-header">#私のイコノイジョイベスト選手権</h1>
         </div>
@@ -525,17 +526,20 @@
             <div class="card-container">
                 <a href="https://youtu.be/F3P8vcZkIh4" target="_blank" class="card love-card">
                     <div class="content-area">
-                        <img src="{% static 'images/love_logo_word2.png' %}" alt="Love" class="card-image">
+                        <img src="{% static 'images/love_logo_word2.png' %}" alt="Love" class="card-image"
+                        oncontextmenu="return false"/>
                     </div>
                 </a>
                 <a href="https://youtu.be/PlYXXoMPWjs" target="_blank" class="card me-card">
                     <div class="content-area">
-                        <img src="{% static 'images/me_logo_word.png' %}" alt="Me" class="card-image">
+                        <img src="{% static 'images/me_logo_word.png' %}" alt="Me" class="card-image"
+                        oncontextmenu="return false"/>
                     </div>
                 </a>
                 <a href="https://youtu.be/Vgwuc0C9UoQ" target="_blank" class="card joy-card">
                     <div class="content-area">
-                        <img src="{% static 'images/joy_logo_word.png' %}" alt="JOY" class="card-image">
+                        <img src="{% static 'images/joy_logo_word.png' %}" alt="JOY" class="card-image"
+                             oncontextmenu="return false"/>
                     </div>
                 </a>
             </div>
@@ -567,53 +571,56 @@
                         <div class="recommendation-settings">
                             <h3>一推し設定</h3>
                             <div class="select-group love-select">
-                                <label>=LOVE</label>
-                                <select name="oshi1">
-                                    <option value="大谷映美里">大谷映美里</option>
-                                    <option value="大場花菜">大場花菜</option>
-                                    <option value="音嶋莉沙">音嶋莉沙</option>
-                                    <option value="齋藤樹愛羅">齋藤樹愛羅</option>
-                                    <option value="佐々木舞香">佐々木舞香</option>
-                                    <option value="髙松瞳">髙松瞳</option>
-                                    <option value="瀧脇笙古">瀧脇笙古</option>
-                                    <option value="野口衣織">野口衣織</option>
-                                    <option value="諸橋沙夏">諸橋沙夏</option>
-                                    <option value="山本杏奈">山本杏奈</option>
-                                </select>
+                                <label>=LOVE
+                                    <select name="oshi1">
+                                        <option value="大谷映美里">大谷映美里</option>
+                                        <option value="大場花菜">大場花菜</option>
+                                        <option value="音嶋莉沙">音嶋莉沙</option>
+                                        <option value="齋藤樹愛羅">齋藤樹愛羅</option>
+                                        <option value="佐々木舞香">佐々木舞香</option>
+                                        <option value="髙松瞳">髙松瞳</option>
+                                        <option value="瀧脇笙古">瀧脇笙古</option>
+                                        <option value="野口衣織">野口衣織</option>
+                                        <option value="諸橋沙夏">諸橋沙夏</option>
+                                        <option value="山本杏奈">山本杏奈</option>
+                                    </select>
+                                </label>
                             </div>
                             <div class="select-group me-select">
-                                <label>≠ME</label>
-                                <select name="oshi2">
-                                    <option value="尾木波菜">尾木波菜</option>
-                                    <option value="落合希来里">落合希来里</option>
-                                    <option value="蟹沢萌子">蟹沢萌子</option>
-                                    <option value="河口夏音">河口夏音</option>
-                                    <option value="川中子奈月心">川中子奈月心</option>
-                                    <option value="櫻井もも">櫻井もも</option>
-                                    <option value="菅波美玲">菅波美玲</option>
-                                    <option value="鈴木瞳美">鈴木瞳美</option>
-                                    <option value="谷崎早耶">谷崎早耶</option>
-                                    <option value="冨田菜々風">冨田菜々風</option>
-                                    <option value="永田詩央里">永田詩央里</option>
-                                    <option value="本田珠由記">本田珠由記</option>
-                                </select>
+                                <label>≠ME
+                                    <select name="oshi2">
+                                        <option value="尾木波菜">尾木波菜</option>
+                                        <option value="落合希来里">落合希来里</option>
+                                        <option value="蟹沢萌子">蟹沢萌子</option>
+                                        <option value="河口夏音">河口夏音</option>
+                                        <option value="川中子奈月心">川中子奈月心</option>
+                                        <option value="櫻井もも">櫻井もも</option>
+                                        <option value="菅波美玲">菅波美玲</option>
+                                        <option value="鈴木瞳美">鈴木瞳美</option>
+                                        <option value="谷崎早耶">谷崎早耶</option>
+                                        <option value="冨田菜々風">冨田菜々風</option>
+                                        <option value="永田詩央里">永田詩央里</option>
+                                        <option value="本田珠由記">本田珠由記</option>
+                                    </select>
+                                </label>
                             </div>
                             <div class="select-group joy-select">
-                                <label>≒JOY</label>
-                                <select name="oshi3">
-                                    <option value="逢田珠里依">逢田珠里依</option>
-                                    <option value="天野香乃愛">天野香乃愛</option>
-                                    <option value="市原愛弓">市原愛弓</option>
-                                    <option value="江角怜音">江角怜音</option>
-                                    <option value="大信田美月">大信田美月</option>
-                                    <option value="大西葵">大西葵</option>
-                                    <option value="小澤愛実">小澤愛実</option>
-                                    <option value="髙橋舞">髙橋舞</option>
-                                    <option value="藤沢莉子">藤沢莉子</option>
-                                    <option value="村山結香">村山結香</option>
-                                    <option value="山田杏佳">山田杏佳</option>
-                                    <option value="山野愛月">山野愛月</option>
-                                </select>
+                                <label>≒JOY
+                                    <select name="oshi3">
+                                        <option value="逢田珠里依">逢田珠里依</option>
+                                        <option value="天野香乃愛">天野香乃愛</option>
+                                        <option value="市原愛弓">市原愛弓</option>
+                                        <option value="江角怜音">江角怜音</option>
+                                        <option value="大信田美月">大信田美月</option>
+                                        <option value="大西葵">大西葵</option>
+                                        <option value="小澤愛実">小澤愛実</option>
+                                        <option value="髙橋舞">髙橋舞</option>
+                                        <option value="藤沢莉子">藤沢莉子</option>
+                                        <option value="村山結香">村山結香</option>
+                                        <option value="山田杏佳">山田杏佳</option>
+                                        <option value="山野愛月">山野愛月</option>
+                                    </select>
+                                </label>
                             </div>
                         </div>
                         <input type="hidden" name="list_ref" id="list_ref">
@@ -634,65 +641,69 @@
                     <div class="song-settings">
                         <div class="select-background">
                             <div class="select-group background-select">
-                                <label data-ja="背景選択" data-zh="背景選擇">背景選擇</label>
-                                <select name="background">
-                                    <option value="1">イコラブ</option>
-                                    <option value="10">ノイミー</option>
-                                    <option value="100">ニアジョイ</option>
-                                    <option value="111">イコノイジョイ</option>
-                                </select>
+                                <label data-ja="背景選択" data-zh="背景選擇">背景選擇
+                                    <select name="background">
+                                        <option value="1">イコラブ</option>
+                                        <option value="10">ノイミー</option>
+                                        <option value="100">ニアジョイ</option>
+                                        <option value="111">イコノイジョイ</option>
+                                    </select>
+                                </label>
                             </div>
                         </div>
                         <div class="recommendation-settings">
                             <h3>一推し設定</h3>
                             <div class="select-group love-select">
-                                <label>=LOVE</label>
-                                <select name="oshi1">
-                                    <option value="大谷映美里">大谷映美里</option>
-                                    <option value="大場花菜">大場花菜</option>
-                                    <option value="音嶋莉沙">音嶋莉沙</option>
-                                    <option value="齋藤樹愛羅">齋藤樹愛羅</option>
-                                    <option value="佐々木舞香">佐々木舞香</option>
-                                    <option value="髙松瞳">髙松瞳</option>
-                                    <option value="瀧脇笙古">瀧脇笙古</option>
-                                    <option value="野口衣織">野口衣織</option>
-                                    <option value="諸橋沙夏">諸橋沙夏</option>
-                                    <option value="山本杏奈">山本杏奈</option>
-                                </select>
+                                <label>=LOVE
+                                    <select name="oshi1">
+                                        <option value="大谷映美里">大谷映美里</option>
+                                        <option value="大場花菜">大場花菜</option>
+                                        <option value="音嶋莉沙">音嶋莉沙</option>
+                                        <option value="齋藤樹愛羅">齋藤樹愛羅</option>
+                                        <option value="佐々木舞香">佐々木舞香</option>
+                                        <option value="髙松瞳">髙松瞳</option>
+                                        <option value="瀧脇笙古">瀧脇笙古</option>
+                                        <option value="野口衣織">野口衣織</option>
+                                        <option value="諸橋沙夏">諸橋沙夏</option>
+                                        <option value="山本杏奈">山本杏奈</option>
+                                    </select>
+                                </label>
                             </div>
                             <div class="select-group me-select">
-                                <label>≠ME</label>
-                                <select name="oshi2">
-                                    <option value="尾木波菜">尾木波菜</option>
-                                    <option value="落合希来里">落合希来里</option>
-                                    <option value="蟹沢萌子">蟹沢萌子</option>
-                                    <option value="河口夏音">河口夏音</option>
-                                    <option value="川中子奈月心">川中子奈月心</option>
-                                    <option value="櫻井もも">櫻井もも</option>
-                                    <option value="菅波美玲">菅波美玲</option>
-                                    <option value="鈴木瞳美">鈴木瞳美</option>
-                                    <option value="谷崎早耶">谷崎早耶</option>
-                                    <option value="冨田菜々風">冨田菜々風</option>
-                                    <option value="永田詩央里">永田詩央里</option>
-                                    <option value="本田珠由記">本田珠由記</option>
-                                </select>
+                                <label>≠ME
+                                    <select name="oshi2">
+                                        <option value="尾木波菜">尾木波菜</option>
+                                        <option value="落合希来里">落合希来里</option>
+                                        <option value="蟹沢萌子">蟹沢萌子</option>
+                                        <option value="河口夏音">河口夏音</option>
+                                        <option value="川中子奈月心">川中子奈月心</option>
+                                        <option value="櫻井もも">櫻井もも</option>
+                                        <option value="菅波美玲">菅波美玲</option>
+                                        <option value="鈴木瞳美">鈴木瞳美</option>
+                                        <option value="谷崎早耶">谷崎早耶</option>
+                                        <option value="冨田菜々風">冨田菜々風</option>
+                                        <option value="永田詩央里">永田詩央里</option>
+                                        <option value="本田珠由記">本田珠由記</option>
+                                    </select>
+                                </label>
                             </div>
                             <div class="select-group joy-select">
-                                <label>≒JOY</label>
-                                <select name="oshi3">
-                                    <option value="逢田珠里依">逢田珠里依</option>
-                                    <option value="天野香乃愛">天野香乃愛</option>
-                                    <option value="市原愛弓">市原愛弓</option>
-                                    <option value="江角怜音">江角怜音</option>
-                                    <option value="大信田美月">大信田美月</option>
-                                    <option value="大西葵">大西葵</option>
-                                    <option value="小澤愛実">小澤愛実</option>
-                                    <option value="髙橋舞">髙橋舞</option>
-                                    <option value="藤沢莉子">藤沢莉子</option>
-                                    <option value="村山結香">村山結香</option>
-                                    <option value="山田杏佳">山田杏佳</option>
-                                    <option value="山野愛月">山野愛月</option>
-                                </select>
+                                <label>≒JOY
+                                    <select name="oshi3">
+                                        <option value="逢田珠里依">逢田珠里依</option>
+                                        <option value="天野香乃愛">天野香乃愛</option>
+                                        <option value="市原愛弓">市原愛弓</option>
+                                        <option value="江角怜音">江角怜音</option>
+                                        <option value="大信田美月">大信田美月</option>
+                                        <option value="大西葵">大西葵</option>
+                                        <option value="小澤愛実">小澤愛実</option>
+                                        <option value="髙橋舞">髙橋舞</option>
+                                        <option value="藤沢莉子">藤沢莉子</option>
+                                        <option value="村山結香">村山結香</option>
+                                        <option value="山田杏佳">山田杏佳</option>
+                                        <option value="山野愛月">山野愛月</option>
+                                    </select>
+                                </label>
                             </div>
                         </div>
                         <input type="hidden" name="list_ref" id="make_list_ref">
@@ -922,22 +933,22 @@
             })
 
             document.addEventListener('click', function () {
-                    // 取得checkbox相關元素
-                    const checkboxGroup = document.querySelector('.checkbox-group');
-                    const checkboxItems = document.querySelectorAll('.checkbox-item');
+                // 取得checkbox相關元素
+                const checkboxGroup = document.querySelector('.checkbox-group');
+                const checkboxItems = document.querySelectorAll('.checkbox-item');
 
-                    // 如果當前有錯誤樣式，則移除它們
-                    if (checkboxItems[0].classList.contains('error')) {
-                        checkboxGroup.classList.remove('shake');
-                        checkboxItems.forEach(item => item.classList.remove('error'));
-                    }
+                // 如果當前有錯誤樣式，則移除它們
+                if (checkboxItems[0].classList.contains('error')) {
+                    checkboxGroup.classList.remove('shake');
+                    checkboxItems.forEach(item => item.classList.remove('error'));
+                }
             });
 
             window.addEventListener('pageshow', function (event) {
-                    if (event.persisted) {
-                        location.reload();
-                    }
-                });
+                if (event.persisted) {
+                    location.reload();
+                }
+            });
 
         </script>
     </body>
