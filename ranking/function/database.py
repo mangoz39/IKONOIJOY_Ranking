@@ -1,9 +1,11 @@
 import json
+import logging
 
 from django.db.models import Count
 from collections import Counter
-
 from ranking.models import UserChoice
+
+logger = logging.getLogger(__name__)
 
 
 def record_user_choice(session_id, ip=None, oshi=[], song_list=None):
@@ -39,7 +41,7 @@ def record_user_choice(session_id, ip=None, oshi=[], song_list=None):
         return user_choice
 
     except Exception as e:
-        print(f"記錄選擇時出錯：{e}")
+        logger.exception(f"Error in database.py: {e}")
         return None
 
 

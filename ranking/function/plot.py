@@ -11,20 +11,7 @@ def group_info_process(song_count, oshi):
         case 15:
             return 2, "nearly_equal_joy_back.png", oshi[2]
         case 51:
-            if oshi[1] == "川中子奈月心" or "菅波美玲":
-                return 1, "not_equal_me_back_1.png", oshi[1]
-            elif oshi[1] == "蟹沢萌子" or "冨田菜々風":
-                return 1, "not_equal_me_back_2.png", oshi[1]
-            elif oshi[1] == "永田詩央里" or "本田珠由記":
-                return 1, "not_equal_me_back_3.png", oshi[1]
-            elif oshi[1] == "尾木波菜" or "櫻井もも":
-                return 1, "not_equal_me_back_4.png", oshi[1]
-            elif oshi[1] == "鈴木瞳美" or "谷崎早耶":
-                return 1, "not_equal_me_back_5.png", oshi[1]
-            elif oshi[1] == "河口夏音" or "落合希来里":
-                return 1, "not_equal_me_back_6.png", oshi[1]
-            else:
-                return 1, "not_equal_me_back_2.png", oshi[1]
+            return 1, "not_equal_me_back.png", oshi[1]
         case 72:
             return 0, "equal_love_back.png", oshi[0]
         case _:
@@ -66,7 +53,7 @@ def plot_rank(song_list, count, oshi):
         case 0:
             position_x, position_y, position_f, footer = love_position_x, love_position_y, love_footer, f'生徒会長：{oshi_name}'
         case 1:
-            position_x, position_y, position_f, footer = me_position_x, me_position_y, me_footer, f'当番：{oshi_name}'
+            position_x, position_y, position_f, footer = me_position_x, me_position_y, me_footer, f'日直：{oshi_name}'
         case 2:
             position_x, position_y, position_f, footer = joy_position_x, joy_position_y, joy_footer, f'委員長：{oshi_name}'
         case _:

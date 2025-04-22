@@ -19,7 +19,7 @@ from django.urls import path
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from ranking.views import (index, start_ranking, rank, choose_song, result,
+from ranking.views import (index, start_ranking, rank, choose_song, result, see_full_result,
                            oshi_statistics_view, record, bookmark, make_bookmark)
 
 urlpatterns = [
@@ -33,6 +33,7 @@ urlpatterns = [
     path('choose_song', choose_song),
     path('result', result, name='result'),
     path('record', record, name='record'),
+    path('full_list', see_full_result, name='full_list'),
     path('api/oshi-statistics', oshi_statistics_view, name='oshi_statistics')
 ]
 

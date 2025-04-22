@@ -1,14 +1,18 @@
 import json
 import random
+import logging
 
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.cache import never_cache
 
-from .function import ranking, plot, database  # 引入排序類
+from .function import ranking, plot, database
 from .files import songs as sg
 
+logger = logging.getLogger(__name__)
 
+
+@never_cache
 def index(request):
     request.session['access'] = 0
     return render(request, "index.html")
@@ -59,7 +63,7 @@ def start_ranking(request):
                 song_list = 3
                 song_count = sg.ikonoijoy_total
             case _:
-                return redirect('home')
+                return redirect('/')
 
         for i in range(song_count):
             rand_list.append(i)
@@ -76,7 +80,7 @@ def start_ranking(request):
         request.session['access'] = '1'
         return redirect('rank')
 
-    return redirect('home')
+    return redirect('/')
 
 
 def rank(request):
@@ -84,18 +88,21 @@ def rank(request):
         song_list = sg.slist[request.session.get('song_list')]
         ranker_data = request.session.get("ranker")
         if ranker_data is None:
-            return JsonResponse({"error": "400 Bad Request (Access Denied)"}, status=400)
+            logger.warning("Invalid JSON format from client: %s")
+            return redirect('/')
+            # return JsonResponse({"error": "400 Bad Request (Access Denied)"}, status=400)
 
         # 使用 from_dict 重新建立 SongRanker 物件
         songs = request.session.get("songs", [])
         ranker = ranking.SongRanker.from_dict(ranker_data, songs)
         song_left, song_right = ranker.get_current_pair()
         if song_left == 0 and song_right == 0:
-            return JsonResponse({"error": "400 Bad Request (Access Denied)"}, status=400)
+            return redirect('/')
+            # return JsonResponse({"error": "400 Bad Request (Access Denied)"}, status=400)
 
         request.session["ranker"] = ranker.to_dict()
 
-        return render(request, "ranking2.html", {
+        return render(request, "ranking.html", {
             "finished": False,
             "song1": song_list[song_left].getName(),
             "song2": song_list[song_right].getName(),
@@ -105,16 +112,17 @@ def rank(request):
             "song2_color": song_list[song_right].getGroup()
         })
     else:
-        return JsonResponse({"error": "400 Bad Request (Access Denied)"}, status=400)
+        return redirect('/')
+        # return JsonResponse({"error": "400 Bad Request (Access Denied)"}, status=400)
 
 
-@csrf_exempt
 def choose_song(request):
     song_list = sg.slist[request.session.get('song_list')]
     if request.method == "POST":
         ranker_data = request.session.get("ranker")
         if ranker_data is None:
-            return JsonResponse({"error": "400 Bad Request (Access Denied)"}, status=400)
+            return redirect('/')
+            # return JsonResponse({"error": "400 Bad Request (Access Denied)"}, status=400)
 
         # 使用 from_dict 重新建立 SongRanker 物件
         songs = request.session.get("songs", [])
@@ -129,17 +137,23 @@ def choose_song(request):
         if is_finished:
             tmp_res = ranker.temp_list[0]
             tmp_ses = []
+            tmp_full_list = []
             result_list = []
             if request.session.get('song_count') > 55:
                 k = 10
             else:
                 k = 12
-            for s in tmp_res[:k]:
+            for s in tmp_res:
                 result_list.append(song_list[s])
 
-            for songs in result_list:
+            for songs in result_list[:k]:
                 tmp_ses.append(songs.getName())
             request.session["sorted_songs"] = tmp_ses
+
+            for songs in result_list:
+                tmp_full_list.append(songs.getName())
+            request.session["full_sorted_songs"] = tmp_full_list
+
             return JsonResponse({"finished": True})
 
         song_left, song_right = ranker.get_current_pair()
@@ -165,7 +179,8 @@ def result(request):
         request.session.get('song_count', 0),
         request.session.get('oshi', []))
     if plot_pend is None or song_count is None or oshi_list is None:
-        return JsonResponse({"error": "400 Bad Request (Access Denied)"}, status=400)
+        return redirect('/')
+        # return JsonResponse({"error": "400 Bad Request (Access Denied)"}, status=400)
     img = plot.plot_rank(plot_pend, song_count, oshi_list)
     user_id = request.session.session_key
     ip = request.META.get('REMOTE_ADDR')
@@ -190,13 +205,10 @@ def record(request):
             'base64_image': img,
             'image_type': 'image/png'})
     else:
-        return render(request, "index.html")
+        return redirect('/')
 
 
 def oshi_statistics_view(request):
-    """
-    顯示統計結果的函數
-    """
     stats = database.get_oshi_statistics()
 
     # 處理格式顯示
@@ -208,7 +220,6 @@ def oshi_statistics_view(request):
     }
 
     for name, count in stats['oshi_love'].items():
-        # 轉換JSON格式
         try:
             if isinstance(name, str) and (name.startswith('{') or name.startswith('[')):
                 parsed_name = json.loads(name)
@@ -291,42 +302,49 @@ def oshi_statistics_view(request):
 def make_bookmark(request):
     request.session.flush()
     if request.method == 'POST':
-        oshi1 = request.POST.get('oshi1', '')
-        oshi2 = request.POST.get('oshi2', '')
-        oshi3 = request.POST.get('oshi3', '')
-        request.session['oshi'] = [oshi1, oshi2, oshi3]
-        background = request.POST.get('background', '0')
-        match background:
-            case '100':
-                request.session['song_count'] = 15
-                ref_list = sg.nearlyequaljoy_song
-                total_sel = 12
-            case '10':
-                request.session['song_count'] = 51
-                ref_list = sg.notequalme_song
-                total_sel = 12
-            case '1':
-                request.session['song_count'] = 72
-                ref_list = sg.equallove_song
-                total_sel = 10
-            case _:
-                request.session['song_count'] = 73
-                ref_list = sg.ikonoijoy_song
-                total_sel = 10
+        try:
+            oshi1 = request.POST.get('oshi1', '')
+            oshi2 = request.POST.get('oshi2', '')
+            oshi3 = request.POST.get('oshi3', '')
+            request.session['oshi'] = [oshi1, oshi2, oshi3]
+            background = request.POST.get('background', '0')
+            match background:
+                case '100':
+                    request.session['song_count'] = 15
+                    ref_list = sg.nearlyequaljoy_song
+                    total_sel = 12
+                case '10':
+                    request.session['song_count'] = 51
+                    ref_list = sg.notequalme_song
+                    total_sel = 12
+                case '1':
+                    request.session['song_count'] = 72
+                    ref_list = sg.equallove_song
+                    total_sel = 10
+                case _:
+                    request.session['song_count'] = 73
+                    ref_list = sg.ikonoijoy_song
+                    total_sel = 10
 
-        request.session['total_selections'] = total_sel
-        song_list = []
-        for s in ref_list:
-            song_list.append({"name": s.getName(), "youtube_id": s.getID()})
-        song_json = json.dumps(song_list)
-        # print("傳遞的歌曲JSON:", song_json)
+            request.session['total_selections'] = total_sel
+            song_list = []
+            for s in ref_list:
+                song_list.append({"name": s.getName(), "youtube_id": s.getID()})
+            song_json = json.dumps(song_list)
+            # print("傳遞的歌曲JSON:", song_json)
 
-        request.session['oshi'] = [oshi1, oshi2, oshi3]
-        return render(request, "bookmark.html", {
-            "song_json": song_json,
-            "current_selection": 1,
-            "total_selections": total_sel
-        })
+            request.session['oshi'] = [oshi1, oshi2, oshi3]
+            return render(request, "bookmark.html", {
+                "song_json": song_json,
+                "current_selection": 1,
+                "total_selections": total_sel
+            })
+        except KeyError as e:
+            logger.warning("Session data missing in make_bookmark: %s", e)
+            return redirect('/')
+        except Exception:
+            logger.exception("Unexpected error in make_bookmark")
+            return redirect('/')
 
 
 def bookmark(request):
@@ -339,7 +357,8 @@ def bookmark(request):
             res_list = request.session.get('sorted_songs', [])
             res_list.append(song_name)
             if not song_name:
-                return JsonResponse({'status': 'error', 'message': 'Empty Selection'}, status=400)
+                return redirect('/')
+                # return JsonResponse({'status': 'error', 'message': 'Empty Selection'}, status=400)
             request.session['sorted_songs'] = res_list
             request.session.modified = True
 
@@ -359,7 +378,24 @@ def bookmark(request):
                     'message': f'{selection_number} / {total_selections} : {song_name}',
                     'next_selection': selection_number + 1
                 })
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+        except Exception:
+            logger.exception("Error in views.bookmark(request)")
+            return redirect('/')
 
-    return JsonResponse({'status': 'error', 'message': 'HTTP : POST method only (405)'}, status=405)
+    return redirect('/')
+
+
+def see_full_result(request):
+    if request.method == 'GET':
+        try:
+            full_list = request.session.get('full_sorted_songs')
+            return render(request, "full_list.html", {
+                'sorted_songs': full_list})
+        except KeyError as e:
+            logger.warning("Session data missing in make_bookmark: %s", e)
+            return redirect('/')
+        except Exception:
+            logger.exception("Unexpected error in make_bookmark")
+            return redirect('/')
+
+    return redirect('/')

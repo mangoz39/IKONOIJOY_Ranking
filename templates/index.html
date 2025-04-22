@@ -115,19 +115,15 @@
             }
 
             .menu-content li[data-section="record"]:hover {
-                background-color: rgba(238, 211, 214, 0.5);
-            }
-
-            .menu-content li[data-section="make"]:hover {
                 background-color: rgba(190, 231, 229, 0.5);
             }
 
-            .menu-content li[data-section="link"]:hover {
-                background-color: rgba(218, 232, 199, 0.5);
+            .menu-content li[data-section="make"]:hover {
+                background-color: rgba(245, 233, 168, 0.7);
             }
 
-            .menu-content li[data-section="language"]:hover {
-                background-color: rgba(245, 233, 168, 0.7);
+            .menu-content li[data-section="link"]:hover {
+                background: linear-gradient(135deg, #FFABBD, #BEE7E5, #F5E9A8);
             }
 
             .menu-content li:hover {
@@ -316,8 +312,7 @@
                 border: none;
                 border-radius: 5px;
                 font-size: 16px;
-                color: #4f4f4f;
-                text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+                color: white;
                 font-weight: bold;
                 cursor: pointer;
                 position: relative;
@@ -480,6 +475,29 @@
                     margin-top: 20px;
                 }
             }
+
+            @media (max-width: 767px) {
+                .card-container {
+                    flex-direction: column;
+                    height: calc(100vh - 60px);
+                }
+
+                .card {
+                    flex: 1;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .card-image {
+                    max-width: 60vw;
+                    max-height: 60vh;
+                    width: auto;
+                    height: auto;
+                    object-fit: contain;
+                }
+            }
+
         </style>
     </head>
     <body>
@@ -497,8 +515,10 @@
                 <li data-section="record" data-zh="上次紀錄" data-ja="アーカイブ">上次紀錄</li>
                 <li data-section="make" data-zh="製作書籤" data-ja="しおりを作る">製作書籤</li>
                 <li data-section="link" data-zh="相關連結" data-ja="サイトリンク">相關連結</li>
-                <li data-section="language" id="languageToggle">日本語</li>
             </ul>
+            <div class="modal-footer">
+                The image content on this site belongs to<br/><a href="https://www.yoani.co.jp/" target="_blank">代々木アニメーション学院</a>
+            </div>
         </div>
 
         <div class="main-content">
@@ -712,7 +732,6 @@
             const modals = document.querySelectorAll('.modal');
             const closeBtn = document.querySelector('.close');
             const closeBtns = document.querySelectorAll('.close');
-            const languageToggle = document.getElementById('languageToggle');
             const translateElements = document.querySelectorAll('[data-ja][data-zh]');
             let currentLanguage = 'zh'; // 預設為中文
             let isMenuOpen = false;
@@ -735,13 +754,6 @@
                         isMenuOpen = false;
                         menuButton.classList.remove('active');
                         menuContent.classList.remove('active');
-                    }
-                    else if (section === 'language') {
-                        currentLanguage = currentLanguage === 'ja' ? 'zh' : 'ja';
-                        languageToggle.textContent = currentLanguage === 'ja' ? '中文' : '日本語';
-                        translateElements.forEach(element => {
-                            element.textContent = element.getAttribute(`data-${currentLanguage}`);
-                        });
                     }
                     else if (section === 'start') {
                         startModal.classList.add('show');
@@ -920,6 +932,12 @@
                         checkboxItems.forEach(item => item.classList.remove('error'));
                     }
             });
+
+            window.addEventListener('pageshow', function (event) {
+                    if (event.persisted) {
+                        location.reload();
+                    }
+                });
 
         </script>
     </body>

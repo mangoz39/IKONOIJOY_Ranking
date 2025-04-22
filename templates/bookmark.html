@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="ja">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -278,7 +278,7 @@
         {% csrf_token %}
         <div class="top-bar">
             <div class="menu-button">
-                <img src="/static/logo.png" alt="menu">
+                <img src="{% static 'images/ikonoijoy_logo.png' %}" alt="menu">
             </div>
             <h1 class="top-header">#私のイコノイジョイベスト選手権</h1>
         </div>
@@ -445,6 +445,7 @@
                         alert('請先選擇一首歌曲');
                     }
                 });
+
             });
         </script>
     </body>
