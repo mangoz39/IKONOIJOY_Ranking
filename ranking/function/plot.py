@@ -5,6 +5,8 @@ from django.conf import settings
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 
+font_path = '/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc'
+
 
 def group_info_process(song_count, oshi):
     match song_count:
@@ -48,7 +50,7 @@ def plot_rank(song_list, count, oshi):
     image_path = os.path.join(settings.STATICFILES_DIRS[0], 'images', img_info)
     img = Image.open(image_path)
     draw = ImageDraw.Draw(img)
-    font = ImageFont.truetype('Arial Unicode.ttf', size=100)
+    font = ImageFont.truetype(font_path, size=100)
 
     match group_info:
         case 0:
@@ -62,7 +64,7 @@ def plot_rank(song_list, count, oshi):
 
     for i in song_list:
         for size in [100, 90, 80, 50]:
-            font = ImageFont.truetype('Arial Unicode.ttf', size=size)
+            font = ImageFont.truetype(font_path, size=size)
             text_width = font.getbbox(i)[2]
             if text_width <= max_text_width:
                 break  # 找到適合的字體寬度
@@ -71,7 +73,7 @@ def plot_rank(song_list, count, oshi):
         draw.text(get_text_position(i, position_x, position_y, font), text, font=font, fill=(0, 0, 0))
         position_y += 320
 
-    font = ImageFont.truetype('Arial Unicode.ttf', size=70)
+    font = ImageFont.truetype(font_path, size=70)
     draw.text(position_f, footer, font=font, fill=(0, 0, 0, 200))
     buffer = BytesIO()
     img.save(buffer, format='PNG')
