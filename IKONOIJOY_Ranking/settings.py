@@ -5,11 +5,11 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-&wkp+#8_j6@rri@b)5l3met4_lt)vnn+))i*j=#2p)w_qzbrtg'
+SECRET_KEY = config('DJANGO_SECRET_KEY')
 
 DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['my-ikonoijoy.fun']
+ALLOWED_HOSTS = ['my-ikonoijoy.fun', 'dev.my-ikonoijoy.fun', 'test.my-ikonoijoy.fun']
 
 
 # Application definition
@@ -123,7 +123,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

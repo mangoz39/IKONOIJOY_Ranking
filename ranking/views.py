@@ -314,7 +314,7 @@ def make_bookmark(request):
                     ref_list = sg.nearlyequaljoy_song
                     total_sel = 12
                 case '10':
-                    request.session['song_count'] = 51
+                    request.session['song_count'] = 52
                     ref_list = sg.notequalme_song
                     total_sel = 12
                 case '1':
