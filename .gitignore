@@ -3,3 +3,9 @@ db.sqlite3
 .env
 ranking/files
 static
+db.sqlite3
+.DS_Store
+manage.py
+lib
+bin
+.idea
