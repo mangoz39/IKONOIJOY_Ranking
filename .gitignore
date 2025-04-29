@@ -1,9 +1,10 @@
-db.sqlite3
-.env
 ranking/files
 static
-.DS_Store
-manage.py
 lib
 bin
 .idea
+.DS_Store
+.env
+manage.py
+db.sqlite3
+pyvenv.cfg

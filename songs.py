@@ -230,7 +230,7 @@ ikojoy_song = [
     shirann, heroin, beselfish, sukitte, mahotsukai, mayonaka, trigger, junkies, loveccreate, kiaratiara,
     natsumatope, dakaratote, heroinnz, raburoke, lastnote, drivedate, catastrophy, dokosuki, noronoro,
     darebare, thirdbut, zettaiidolyamenaide, sunaori, umilemontea, tokubechu, koibitoijou, choutokkyu,
-    hanamichi, hanadayori, takaramonogreen, nearlyequaljoy, warattefuragiru,lonelylion, sweetsixteen,
+    hanamichi, hanadayori, takaramonogreen, nearlyequaljoy, warattefuragiru, lonelylion, sweetsixteen,
     kyomokimi, oosorabyutto, sonosaki, kittoaoi, mumoujinn, gymdisco, yumemiruidol, nevergiveup,
     hatsukoiciderella, peachteapeachpie, dadadadate, tripledate]
 
