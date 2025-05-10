@@ -1,7 +1,7 @@
 # Project Name
 
 IKONOIJOY Ranking
-> An website for making your own IKONOIJOY ranking.
+> A website for making your own IKONOIJOY ranking.
 
 👉[(http://my-ikonoijoy.fun/)](http://my-ikonoijoy.fun/)
 
